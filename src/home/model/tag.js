@@ -8,7 +8,7 @@ export default class extends think.model.mongo {
     super.init(...args);
 
     this.tableName = "tag";
-    this.tablePrefix = "fk_";
+    this.tablePrefix = "";
   }
 
   /**

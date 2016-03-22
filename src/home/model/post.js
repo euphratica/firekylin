@@ -11,7 +11,8 @@ export default class extends think.model.mongo {
     super.init(...args);
 
     this.tableName = "post";
-    this.tablePrefix = "fk_";
+    this.tablePrefix = "";
+    this.tablePrefix = "";
   }
   /**
    * get where condition

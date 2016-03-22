@@ -9,6 +9,7 @@ export default class extends Base {
    */
   getAction(self){
     this.modelInstance.field('id,name,display_name,email,type,status,create_time,last_login_time');
+    console.log(1);
     return super.getAction(self);
   }
   /**
