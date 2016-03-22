@@ -12,7 +12,6 @@ export default class extends think.model.mongo {
 
     this.tableName = "post";
     this.tablePrefix = "";
-    this.tablePrefix = "";
   }
   /**
    * get where condition
@@ -21,10 +20,10 @@ export default class extends think.model.mongo {
    */
   getWhereCondition(where){
     return think.extend({}, where, {
-      create_time: {'<=': think.datetime()},
-      is_public: 1, //公开
-      type: 0, //文章
-      status: 3 //已经发布
+    create_time: {'<=': think.datetime()},
+      is_public: '1', //公开
+      type: '0', //文章
+      status: '3' //已经发布
     })
   }
   /**
@@ -37,7 +36,6 @@ export default class extends think.model.mongo {
     let field = options.field || 'id,title,pathname,create_time,summary,comment_num';
     if(options.tag || options.cate){
       let name = options.tag ? 'tag' : 'cate';
-      //let {id} = await this.model(name).field('id').setRelation(false).where({name: options.tag || options.cate}).find();
       let {id} = await this.model(name).field('id').where({name: options.tag || options.cate}).find();
       if(think.isEmpty(id)){
         return false;
@@ -51,9 +49,9 @@ export default class extends think.model.mongo {
     }
     
     let where = this.getWhereCondition(options.where);
-
-   // let data = await this.field(field).page(page).setRelation(false).order('create_time DESC').where(where).countSelect();
+console.log(where);
     let data = await this.field(field).page(page).order('create_time DESC').where(where).countSelect();
+    console.log(data);
     return data;
   }
 
@@ -68,9 +66,7 @@ export default class extends think.model.mongo {
     if(think.isEmpty(detail)){
       return detail;
     }
-    //let prevPromise = this.field('title,pathname').setRelation(false).where(this.getWhereCondition({id: ['<', detail.id]})).order('create_time DESC').find();
     let prevPromise = this.field('title,pathname').where(this.getWhereCondition({id: ['<', detail.id]})).order('create_time DESC').find();
-    //let nextPromise = this.field('title,pathname').setRelation(false).where(this.getWhereCondition({id: ['>', detail.id]})).order('create_time ASC').find();
     let nextPromise = this.field('title,pathname').where(this.getWhereCondition({id: ['>', detail.id]})).order('create_time ASC').find();
     let [prev, next] = await Promise.all([prevPromise, nextPromise]);
     return {

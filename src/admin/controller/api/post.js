@@ -6,13 +6,13 @@ import markToc from "marked-toc";
 import highlight from 'highlight.js';
 
 export default class extends Base {
-  modelInstance = this.modelInstance.where({type: 0});
+  modelInstance = this.modelInstance.where({type: '0'});
   /**
    * get
    * @return {[type]} [description]
    */
   async getAction(self){
-   // this.modelInstance.field('id,user_id,type,status,title,pathname,create_time,update_time');
+    // this.modelInstance.field('id,user_id,type,status,title,pathname,create_time,update_time');
     let data;
     if( this.id ) {
       if( this.id === 'lastest' ) return this.lastest();
@@ -24,18 +24,10 @@ export default class extends Base {
         where.user_id = this.userInfo.id;
       }
       data =  await this.modelInstance.where(where).order('id DESC').page( this.get('page'), 15 ).countSelect();
+      //await this.modelInstance.page(1, 5).countSelect();
+      //data = await this.modelInstance.page(1, 5).countSelect();
       console.log(data);
-      console.log(await this.modelInstance.where(where).order('id DESC').page( this.get('page'), 15 ).countSelect());
-      //data.data.map(post => {
-      //  post.id = post._id;
-      //  post.tag = [];
-      //  post.cate = [];
-      //  post.user = {
-      //    "id": '56ebc9d2531d1f80739778bc',
-      //    "name": "admin",
-      //    "display_name": null
-      //  };
-      //});
+      //console.log(await this.modelInstance.where(where).order('id DESC').page( this.get('page'), 15 ).countSelect());
     }
     return this.success(data);
   }
@@ -58,7 +50,12 @@ export default class extends Base {
     data.user_id = this.userInfo.id;
     data = this.getContentAndSummary(data);
     data = this.getPostTime(data);
-    data.tag = await this.getTagIds(data.tag);
+    data.tag = await this.getTagNames(data.tag);
+    data.cate= await this.getCateIds(data.cate);
+    /** 如果是编辑发布文章的话默认状态改为审核中 **/
+    if( data.status == 3 && this.userInfo.type == 2 ) {
+      data.status = 1;
+    }
 
     let insertId = await this.modelInstance.addPost(data);
     return this.success({id: insertId});
@@ -75,7 +72,7 @@ export default class extends Base {
     data.id = this.id;
     data = this.getContentAndSummary(data);
     data = this.getPostTime(data);
-    data.tag = await this.getTagIds(data.tag);
+    data.tag = await this.getTagNames(data.tag);
 
     let rows = await this.modelInstance.savePost(data);
     return this.success({affectedRows: rows});
@@ -91,6 +88,8 @@ export default class extends Base {
     /**草稿可以没有创建时间**/
     if( !data.create_time ) {
       data.create_time = data.status != 0 ? data.update_time : null;
+    }else{
+      data.create_time = think.datetime(data.create_time);
     }
     return data;
   }
@@ -101,21 +100,33 @@ export default class extends Base {
     return data;
   }
 
-  async getTagIds(tags) {
+  async getTagNames(tags) {
     if(!tags){
       return [];
     }
     if(!think.isArray(tags)){
       tags = [tags];
     }
-    let modelInstance = this.model('tag'), tagIds = [];
+    let modelInstance = this.model('tag'), tagNames = [];
     let promises = tags.map(name =>
-      modelInstance.where({name}).thenAdd({name, pathname: encodeURIComponent(name)}).then(data => tagIds.push({tag_id: data.id, name: name}))
+      modelInstance.where({name}).thenAdd({name, pathname: encodeURIComponent(name)}).then(data => tagNames.push({name: name}))
     );
     await Promise.all(promises);
-    return tagIds;
+    return tagNames;
   }
-
+   async getCateIds(cates){
+     if(!cates){
+       return [];
+     }
+     if(!think.isArray(cates)){
+       cates = [cates];
+     }
+     let modelInstance = this.model('cate'), cateIds = [];
+     let promises= cates.map( name =>
+         modelInstance.where({name}).thenAdd({name, pathname: encodeURIComponent(name)}).then(data => tagNames.push({name: name})))
+     await Promise.all(promises);
+     return cateIds;
+   }
   /**
    * generate toc name
    * @param  {String} name []
@@ -143,9 +154,9 @@ export default class extends Base {
       }
       return `<h${b} id="${this.generateTocName(c)}"><a class="anchor" href="#${this.generateTocName(c)}"></a>${c}</h${b}>`;
     });
-    markedContent = markedContent.replace(/<h(\d)[^<>]*>([^<>]+)<\/h\1>/, (a, b, c) => {
-      return `${a}<div class="toc">${tocContent}</div>`;
-    });
+    // markedContent = markedContent.replace(/<h(\d)[^<>]*>([^<>]+)<\/h\1>/, (a, b, c) => {
+    //   return `${a}<div class="toc">${tocContent}</div>`;
+    // });
 
     let highlightContent = markedContent.replace(/<pre><code\s*(?:class="lang-(\w+)")?>([\s\S]+?)<\/code><\/pre>/mg, (a, language, text) => {
       text = text.replace(/&#39;/g, '"').replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/\&quot;/g, '"').replace(/\&amp;/g, "&");

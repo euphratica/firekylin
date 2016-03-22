@@ -6,11 +6,6 @@ import {PasswordHash} from 'phpass';
  */
 export default class extends think.model.mongo {
 
-  init(...args){
-    super.init(...args);
-    this.tableName = "user";
-    this.tablePrefix = "";
-  }
   /**
    * get password
    * @param  {String} username []

@@ -49,16 +49,16 @@ export default class extends Base {
     }
     return this.state.postList.map(item => {
       return (
-        <tr key={item.id}>
+        <tr key={item._id}>
           <td>
-            <Link to={`/post/edit/${item.id}`} title={item.title}>{item.title}</Link>
+            <Link to={`/post/edit/${item._id}`} title={item.title}>{item.title}</Link>
           </td>
-          <td>{item.user.display_name || item.user.name}</td>
+          <td>{/*item.user.display_name || item.user.name*/}</td>
           <td>{this.renderStatus(item.status)}</td>
           <td>{firekylin.formatTime(item.create_time)}</td>
           <td>{firekylin.formatTime(item.update_time)}</td>
           <td>
-            <Link to={`/post/edit/${item.id}`} title={item.title}>
+            <Link to={`/post/edit/${item._id}`} title={item.title}>
               <button type="button" className="btn btn-primary btn-xs">
                 <span className="glyphicon glyphicon-edit"></span>
                 编辑
@@ -72,7 +72,7 @@ export default class extends Base {
                   ModalAction.confirm(
                     '提示',
                     <div className="center">确定删除吗？</div>,
-                    PostAction.delete.bind(PostAction, item.id),
+                    PostAction.delete.bind(PostAction, item._id),
                     'modal-sm'
                   )
                 }

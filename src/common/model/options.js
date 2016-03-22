@@ -2,7 +2,7 @@
 /**
  * model
  */
-export default class extends think.model.mongo {
+export default class extends think.model.base {
   /**
    * options cache key
    * @type {String}

@@ -46,6 +46,7 @@ export default class extends Base {
         userOpen: false
       });
     }
+    console.log(this.refs.userinfo)
   }
 
   toggleUser(){

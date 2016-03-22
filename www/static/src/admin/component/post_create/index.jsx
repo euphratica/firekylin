@@ -49,7 +49,7 @@ export default class extends Base {
 
     this.type = 0;
     this.cate = {};
-    this.id = this.props.params.id | 0;
+    this._id = this.props.params._id | 0;
   }
 
   componentWillMount() {
@@ -57,7 +57,7 @@ export default class extends Base {
     this.listenTo(CateStore, cateList => {
       let list = cateList.filter(cate => cate.pid === 0);
       for(let i=0,l=list.length; i<l; i++) {
-        let child = cateList.filter(cate => cate.pid === list[i].id);
+        let child = cateList.filter(cate => cate.pid === list[i]._id);
         if( child.length === 0 ) continue;
         list.splice.apply(list, [i+1,0].concat(child));
       }
@@ -67,14 +67,14 @@ export default class extends Base {
 
     CateAction.select();
     TagAction.select();
-    if(this.id){
-      PostAction.select(this.id);
+    if(this._id){
+      PostAction.select(this._id);
     }
   }
   componentWillReceiveProps(nextProps) {
-    this.id = nextProps.params.id | 0;
-    if(this.id) {
-      PostAction.select(this.id);
+    this._id = nextProps.params._id | 0;
+    if(this._id) {
+      PostAction.select(this._id);
     }
     let initialState = this.initialState();
     initialState.cateList = this.state.cateList;
@@ -93,14 +93,14 @@ export default class extends Base {
         this.setState({draftSubmitting: false, postSubmitting: false});
         break;
       case 'savePostSuccess':
-        TipAction.success(this.id ? '保存成功' : '添加成功');
+        TipAction.success(this._id ? '保存成功' : '添加成功');
         this.setState({draftSubmitting: false, postSubmitting: false});
         setTimeout(() => this.redirect('post/list'), 1000);
         break;
       case 'getPostInfo':
         data.create_time = moment( new Date(data.create_time) ).format('YYYY-MM-DD HH:mm:ss');
         data.tag = data.tag.map(tag => tag.name);
-        data.cate.forEach(item => this.cate[item.id] = true);
+        data.cate.forEach(item => this.cate[item._id] = true);
         this.setState({postInfo: data});
         break;
     }
@@ -116,8 +116,8 @@ export default class extends Base {
       this.setState({postSubmitting: true});
     }
 
-    if(this.id){
-      values.id = this.id;
+    if(this._id){
+      values._id = this._id;
     }
 
     /** 草稿不存创建时间，其它的状态则默认时间为当前时间 **/
@@ -152,13 +152,13 @@ export default class extends Base {
 
     //如果是在编辑状态下在没有拿到数据之前不做渲染
     //针对 react-bootstrap-validation 插件在 render 之后不更新 defaultValue 做的处理
-    if( this.id && !this.state.postInfo.content ) {
+    if( this._id && !this.state.postInfo.content ) {
       return null;
     }
 
     let cateInitial = [];
     if( Array.isArray(this.state.postInfo.cate) ) {
-      cateInitial = this.state.postInfo.cate.map( item => item.id );
+      cateInitial = this.state.postInfo.cate.map( item => item._id );
     }
 
     //针对 RadioGroup 只有在值为字符串才正常的情况做处理
@@ -184,7 +184,7 @@ export default class extends Base {
                     type="text"
                     placeholder="标题"
                     validate="required"
-                    label={`${this.id ? '编辑' : '撰写'}${this.type ? '页面' : '文章'}`}
+                    label={`${this._id ? '编辑' : '撰写'}${this.type ? '页面' : '文章'}`}
                     value={this.state.postInfo.title}
                     onChange={e => {
                       this.state.postInfo.title = e.target.value;
@@ -214,7 +214,7 @@ export default class extends Base {
                       this.forceUpdate();
                     }}
                     onFullScreen={isFullScreen => this.setState({isFullScreen})}
-                    info = {{id: this.id,type: this.type}}
+                    info = {{_id: this._id,type: this.type}}
                   />
                   <p style={{lineHeight: '30px'}}>文章使用 markdown 格式，格式说明请见<a href="https://guides.github.com/features/mastering-markdown/">这里</a></p>
                 </div>
@@ -225,14 +225,14 @@ export default class extends Base {
                     type="submit"
                     {...props}
                     className="btn btn-default"
-                    onClick={()=> {this.state.status = 0;localStorage.removeItem('unsavetype'+this.type+'id'+this.id)}}
+                    onClick={()=> {this.state.status = 0;localStorage.removeItem('unsavetype'+this.type+'id'+this._id)}}
                   >{this.state.draftSubmitting ? '保存中...' : '保存草稿'}</button>
                   <span> </span>
                   <button
                       type="submit"
                       {...props}
                       className="btn btn-primary"
-                      onClick={()=>{this.state.status = 3;localStorage.removeItem('unsavetype'+this.type+'id'+this.id)}}
+                      onClick={()=>{this.state.status = 3;localStorage.removeItem('unsavetype'+this.type+'_id'+this._id)}}
                   >{this.state.postSubmitting ? '发布中...' : `发布${this.type ? '页面' : '文章'}`}</button>
                 </div>
                 <div style={{marginBottom: 15}}>
@@ -255,17 +255,17 @@ export default class extends Base {
                   <label className="control-label">分类</label>
                   <ul>
                     {this.state.cateList.map(cate =>
-                      <li key={cate.id}>
+                      <li key={cate._id}>
                         {cate.pid !== 0 ? '　' : null}
                         <label>
                           <input
                               type="checkbox"
                               name="cate"
-                              value={cate.id}
-                              checked={cateInitial.includes(cate.id)}
+                              value={cate._id}
+                              checked={cateInitial.includes(cate._id)}
                               onChange={()=>{
-                                this.cate[cate.id] = !this.cate[cate.id];
-                                this.state.postInfo.cate = this.state.cateList.filter(cate => this.cate[cate.id]);
+                                this.cate[cate._id] = !this.cate[cate._id];
+                                this.state.postInfo.cate = this.state.cateList.filter(cate => this.cate[cate._id]);
                                 this.forceUpdate();
                               }}
                           />

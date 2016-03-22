@@ -14,7 +14,7 @@ export default class extends base {
 
   async getAction() {
 
-    let mysql = await this.modelInstance.query('db.version()');
+    let mysql = await this.modelInstance.query('SELECT VERSION() as version');
 
     let data = {
       nodeVersion: process.versions.node,

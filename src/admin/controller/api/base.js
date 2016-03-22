@@ -21,17 +21,12 @@ export default class extends think.controller.rest {
    * @return {} []
    */
   async __before(){
-    //let userInfo = await this.session('userInfo') || {};
-    //if(think.isEmpty(userInfo)){
-    //  return this.fail('USER_NOT_LOGIN');
-    //}
-    //this.userInfo = userInfo;
-    //let type = userInfo.type | 0;
-    this.userInfo={
-      type:1,
-      name:"admin"
+    let userInfo = await this.session('userInfo') || {};
+    if(think.isEmpty(userInfo)){
+      return this.fail('USER_NOT_LOGIN');
     }
-    let type=1;
+    this.userInfo = userInfo;
+    let type = userInfo.type | 0;
     //not admin
     if(type !== 1){
       let action = this.http.action;

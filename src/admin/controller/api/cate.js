@@ -9,8 +9,12 @@ export default class extends Base {
    */
   getAction(self){
     //this.modelInstance.setRelation(false);
+    if(this.get('pid')) {
+      this.modelInstance.where({pid: this.get('pid')});
+    }
     return super.getAction(self);
   }
+
   /**
    * add user
    * @return {[type]} [description]
@@ -18,11 +22,11 @@ export default class extends Base {
   async postAction(){
     let data = this.post();
 
-    let ret = await this.modelInstance.addTag(data);
+    let ret = await this.modelInstance.addCate(data);
     if(ret.type === 'exist'){
-      return this.fail('TAG_EXIST');
+      return this.fail('CATE_EXIST');
     }
-    return this.success({id: ret.id});
+    return this.success({_id: ret.id});
   }
   /**
    * update user info
@@ -34,7 +38,7 @@ export default class extends Base {
     }
     let data = this.post();
     data.id = this.id;
-    let rows = await this.modelInstance.saveTag(data);
+    let rows = await this.modelInstance.saveCate(data);
     return this.success({affectedRows: rows});
   }
 }

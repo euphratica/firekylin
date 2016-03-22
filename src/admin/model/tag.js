@@ -10,6 +10,7 @@ export default class extends think.model.mongo {
    */
   init(...args){
     super.init(...args);
+
     this.tableName = "tag";
     this.tablePrefix = "";
   }

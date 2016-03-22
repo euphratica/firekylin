@@ -6,21 +6,20 @@ export default class extends think.controller.base {
    */
   async __before(){
 
-    //let http = this.http;
-    //if(http.controller === 'user' && http.action === 'login'){
-    //  return;
-    //}
-    //let userInfo = await this.session('userInfo') || {};
-    //if(think.isEmpty(userInfo)){
-    //  if(this.isAjax()){
-    //    return this.fail('NOT_LOGIN');
-    //  }
-    //}
-    //this.userInfo = userInfo;
+    let http = this.http;
+    if(http.controller === 'user' && http.action === 'login'){
+      return;
+    }
+    let userInfo = await this.session('userInfo') || {};
+    if(think.isEmpty(userInfo)){
+      if(this.isAjax()){
+        return this.fail('NOT_LOGIN');
+      }
+    }
+    this.userInfo = userInfo;
     if(!this.isAjax()){
-      //this.assign('userInfo', {id: userInfo.id, name: userInfo.name, type: userInfo.type});
+     // this.assign('userInfo', {id: userInfo.id, name: userInfo.name, type: userInfo.type});
       this.assign('userInfo', { id:'56ebc9d2531d1f80739778bc',name: 'admin', type: 1});
-
     }
   }
   /**

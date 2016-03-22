@@ -45,7 +45,7 @@ export default class extends Base {
 
   async pageAction(){
     let pathname = this.get('pathname');
-    let detail = await this.model('post').setRelation(false).where({
+    let detail = await this.model('post').where({
       pathname: pathname,
       is_public: 1, //公开
       type: 1, //文章
@@ -93,18 +93,5 @@ export default class extends Base {
 
     this.assign('keyword', keyword);
     return this.displayView('search');
-  }
-  /**
-   * rss
-   * @return {[type]} [description]
-   */
-  async rssAction(){
-    let model = this.model('post');
-    let list = await model.getPostRssList();
-    this.assign('list', list);
-    this.assign('currentTime', (new Date()).toString());
-    
-    this.type('text/xml');
-    return super.display(this.HOME_VIEW_PATH + 'rss.xml');
   }
 }

@@ -27,7 +27,9 @@ export default class extends think.model.mongo {
       status: 0,
       create_time,
       update_time: create_time,
-      is_public: 1
+      is_public: 1,
+      tag:[],
+      cate:[]
     }, data);
 
     return this.where({pathname: data.pathname, _logic: 'OR'}).thenAdd(data);

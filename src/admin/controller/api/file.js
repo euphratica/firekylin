@@ -161,7 +161,7 @@ export default class extends Base {
 
     //导入页面
     let pages = channel.item.filter(item => item['wp:post_type'][0] === 'page');
-    //let pageModelInstance = this.model('page').setRelation('user');
+  //  let pageModelInstance = this.model('page').setRelation('user');
     let pageModelInstance = this.model('page');
     let pagesPromise = pages.map(async item => {
       let user = await this.model('user').where({name: item['dc:creator'][0]}).find();

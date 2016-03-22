@@ -2,6 +2,6 @@
 /**
  * model
  */
-export default class extends think.model.relation {
+export default class extends think.model.mongo {
   
 }

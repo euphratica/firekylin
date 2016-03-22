@@ -3,8 +3,8 @@
 import Post from './post';
 
 export default class extends Post {
+ // modelInstance = this.modelInstance.setRelation('user').where({type: 1});
   modelInstance = this.modelInstance.where({type: 1});
-
   getAction(self){
     this.modelInstance.order('id DESC').page( this.get('page'), 20 );
     return super.getBaseAction(self);
