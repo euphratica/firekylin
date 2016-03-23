@@ -7,11 +7,18 @@ export default class extends Base {
    * get
    * @return {[type]} [description]
    */
-  getAction(self){
+ async getAction(self){
     //this.modelInstance.setRelation(false);
     if(this.get('pid')) {
-      this.modelInstance.where({pid: this.get('pid')});
+     console.log(123);
+     this.modelInstance.where({pid: this.get('pid')});
     }
+    //let data;
+    //data = await this.modelInstance.select();
+    //data.map(cate =>{
+    //  cate.id=cate._id;
+    //})
+    //return this.success(data);
     return super.getAction(self);
   }
 

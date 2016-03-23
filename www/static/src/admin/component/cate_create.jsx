@@ -18,26 +18,30 @@ export default class extends Base {
         name: '',
         pathname: ''
       },
-      pid: 0,
+      pid: '0',
       cateList: []
     });
   }
   constructor(props){
     super(props);
     this.state = this.initialState();
-    this.id = this.props.params.id | 0;
+    this.id = this.props.params.id;
+    console.log('id'+this.props.params.id);
   }
 
   componentWillMount() {
     this.listenTo(CateStore, this.handleTrigger.bind(this));
+   // console.log("this.cateid:"+this.id);
     CateAction.selectParent();
     if(this.id){
+      //console.log("this.id:"+this.id);
       CateAction.select(this.id);
     }
+
   }
 
   componentWillReceiveProps(nextProps) {
-    this.id = nextProps.params.id | 0;
+    this.id = nextProps.params.id ;
     if( this.id ) {
       CateAction.select(this.id);
     }
@@ -53,6 +57,7 @@ export default class extends Base {
    * @return {[type]}      [description]
    */
   handleTrigger(data, type){
+    console.log(data);
     switch(type){
       case 'saveCateFail':
         TipAction.fail(data.message);
@@ -92,7 +97,7 @@ export default class extends Base {
     if(this.state.submitting){
       props.disabled = true;
     }
-    let cateList = [{id:0, name:'不选择'}].concat(this.state.cateList);
+    let cateList = [{id:'0', name:'不选择'}].concat(this.state.cateList);
 
     //如果是在编辑状态下在没有拿到数据之前不做渲染
     //针对 react-bootstrap-validation 插件在 render 之后不更新 defaultValue 做的处理
@@ -141,8 +146,8 @@ export default class extends Base {
               <label className="control-label col-xs-1">父级分类</label>
               <div className="col-xs-4">
                 <select className="form-control" onChange={e => this.setState({pid: e.target.value})} value={this.state.pid}>
-                  {cateList.length === 1 ? <option value={cateList[0].id}>{cateList[0].name}</option>
-                  : cateList.map(item => <option key={item.id} value={item.id}>{item.name}</option>)
+                  {cateList.length === 1 ? <option value={cateList[0]._id}>{cateList[0].name}</option>
+                  : cateList.map(item => <option key={item._id} value={item._id}>{item.name}</option>)
                   }
                 </select>
               </div>

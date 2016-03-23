@@ -32,12 +32,12 @@ export default class extends think.model.mongo {
   }
 
   async saveCate(data){
-    let info = await this.where({id: data.id}).find();
+    let info = await this.where({_id: data.id}).find();
     if(think.isEmpty(info)){
       return Promise.reject(new Error('CATE_NOT_EXIST'));
     }
 
-    return this.where({id: data.id}).update(data);
+    return this.where({_id: data.id}).update(data);
   }
 
   /**

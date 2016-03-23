@@ -18,6 +18,7 @@ export default Reflux.createStore({
     if(id){
       url += '/' + id;
     }
+    console.log(id);
     let req = superagent.get(url);
     return firekylin.request(req).then(
       data => this.trigger(data, id ? 'getCateInfo' : 'getCateList')
@@ -26,6 +27,7 @@ export default Reflux.createStore({
   onSelectParent() {
     let url = '/admin/api/cate?pid=0';
     let req = superagent.get(url);
+    console.log(url);
     return firekylin.request(req).then(
       data => this.trigger(data, 'getCateParent')
     );

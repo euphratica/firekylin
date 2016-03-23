@@ -31,6 +31,7 @@ export default class extends Base {
         this.setState({loading: true}, CateAction.select);
         break;
       case 'getCateList':
+         // console.log(data);
         this.setState({cateList: data, loading: false});
         break;
     }
@@ -44,12 +45,12 @@ export default class extends Base {
     }
     return this.state.cateList.map(item => {
       return (
-        <tr key={item.id}>
+        <tr key={item._id}>
           <td>{item.name}</td>
           <td>{item.pathname}</td>
           <td>{/*item.post_cate.length*/}</td>
           <td>
-            <Link to={`/cate/edit/${item.id}`} title={item.name}>
+            <Link to={`/cate/edit/${item._id}`} title={item.name}>
               <button type="button" className="btn btn-primary btn-xs">
                 <span className="glyphicon glyphicon-edit"></span>
                 编辑
@@ -63,7 +64,7 @@ export default class extends Base {
                   ModalAction.confirm(
                     '提示',
                     <div className="center">确定删除吗？</div>,
-                    CateAction.delete.bind(CateAction, item.id),
+                    CateAction.delete.bind(CateAction, item._id),
                     'modal-sm'
                   )
                 }

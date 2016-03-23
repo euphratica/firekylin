@@ -19,13 +19,13 @@ export default class extends Post {
   }
 
   async savePost(data){
-    let info = await this.where({id: data.id, type: 1}).find();
+    let info = await this.where({_id: data.id, type: 1}).find();
     if(think.isEmpty(info)){
       return Promise.reject(new Error('PAGE_NOT_EXIST'));
     }
 
     data.update_time = think.datetime();
-    return this.where({id: data.id}).update(data);
+    return this.where({_id: data.id}).update(data);
   }
 
 }

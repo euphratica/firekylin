@@ -52,20 +52,24 @@ export default class extends Base {
 
      // console.log(this.props.params.id);
     this.id = this.props.params.id ;
-     console.log('this.id:'+this.id);
+    // console.log('this.id:'+this.id);
   }
 
   componentWillMount() {
     this.listenTo(PostStore, this.handleTrigger.bind(this));
     this.listenTo(CateStore, cateList => {
-      let list = cateList.filter(cate => cate.pid === 0);
+       console.log(cateList);
+      let list = cateList.filter(cate => cate.pid === '0');
+
       for(let i=0,l=list.length; i<l; i++) {
-        let child = cateList.filter(cate => cate.pid === list[i].id);
+        let child = cateList.filter(cate => cate.pid === list[i]._id);
+       // console.log(child);
         if( child.length === 0 ) continue;
         list.splice.apply(list, [i+1,0].concat(child));
+        //console.log(list);
       }
       this.setState({cateList: list});
-     // console.log(list);
+
     });
     this.listenTo(TagStore, tagList => this.setState({tagList}));
 
@@ -203,7 +207,7 @@ export default class extends Base {
                       name="pathname"
                       type="text"
                       validate="required"
-                      disabled={this.state.postInfo.status === 3}
+                      disabled={this.state.postInfo.status == 3}
                       value={this.state.postInfo.pathname}
                       onChange={e => {
                         this.state.postInfo.pathname = e.target.value;
@@ -260,18 +264,19 @@ export default class extends Base {
                 <div className="form-group">
                   <label className="control-label">分类</label>
                   <ul>
-                    {this.state.cateList.map(cate =>
-                      <li key={cate.id}>
-                        {cate.pid !== 0 ? '　' : null}
+                    {
+                      this.state.cateList.map(cate =>
+                      <li key={cate._id}>
+                        {cate.pid != 0 ? '　' : null}
                         <label>
                           <input
                               type="checkbox"
                               name="cate"
-                              value={cate.id}
-                              checked={cateInitial.includes(cate.id)}
+                              value={cate._id}
+                              checked={cateInitial.includes(cate._id)}
                               onChange={()=>{
-                                this.cate[cate.id] = !this.cate[cate.id];
-                                this.state.postInfo.cate = this.state.cateList.filter(cate => this.cate[cate.id]);
+                                this.cate[cate._id] = !this.cate[cate._id];
+                                this.state.postInfo.cate = this.state.cateList.filter(cate => this.cate[cate._id]);
                                 this.forceUpdate();
                               }}
                           />

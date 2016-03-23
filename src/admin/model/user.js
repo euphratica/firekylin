@@ -73,7 +73,7 @@ export default class extends think.model.mongo {
    * @return {[type]}      [description]
    */
   async saveUser(data, ip){
-    let info = await this.where({id: data.id}).find();
+    let info = await this.where({_id: data.id}).find();
     if(think.isEmpty(info)){
       return Promise.reject(new Error('UESR_NOT_EXIST'));
     }
@@ -95,6 +95,6 @@ export default class extends think.model.mongo {
     }
     updateData.last_login_time = think.datetime();
     updateData.last_login_ip = ip;
-    return this.where({id: data.id}).update(updateData);
+    return this.where({_id: data.id}).update(updateData);
   }
 }
