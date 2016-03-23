@@ -26,7 +26,7 @@ export default class extends Base {
     if(ret.type === 'exist'){
       return this.fail('CATE_EXIST');
     }
-    return this.success({_id: ret.id});
+    return this.success({id: ret.id});
   }
   /**
    * update user info

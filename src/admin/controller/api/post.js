@@ -13,10 +13,12 @@ export default class extends Base {
    */
   async getAction(self){
     // this.modelInstance.field('id,user_id,type,status,title,pathname,create_time,update_time');
+    console.log(this.id)
     let data;
     if( this.id ) {
       if( this.id === 'lastest' ) return this.lastest();
-      data = await this.modelInstance.where({id: this.id}).find();
+      data = await this.modelInstance.where({_id: this.id}).select();
+      //console.log(data);
     } else {
       let where = {};
       //不是管理员，只显示个人的文章
@@ -26,9 +28,10 @@ export default class extends Base {
       data =  await this.modelInstance.where(where).order('id DESC').page( this.get('page'), 15 ).countSelect();
       //await this.modelInstance.page(1, 5).countSelect();
       //data = await this.modelInstance.page(1, 5).countSelect();
-      console.log(data);
+     // console.log(data);
       //console.log(await this.modelInstance.where(where).order('id DESC').page( this.get('page'), 15 ).countSelect());
     }
+   // console.log(data)
     return this.success(data);
   }
 

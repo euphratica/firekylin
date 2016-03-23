@@ -39,7 +39,7 @@ export default class extends Base {
       return this.redirect('/');
     }
     this.assign(detail);
-    
+    console.log(detail);
     return this.displayView('detail');
   }
 

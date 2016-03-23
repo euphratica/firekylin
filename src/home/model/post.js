@@ -19,12 +19,17 @@ export default class extends think.model.mongo {
    * @return {[type]}       [description]
    */
   getWhereCondition(where){
-    return think.extend({}, where, {
-    create_time: {'<=': think.datetime()},
+    where = think.extend({}, where, {
       is_public: '1', //公开
       type: '0', //文章
       status: '3' //已经发布
     })
+    if(!where.create_time){
+      where.create_time = {
+        '<=': think.datetime()
+      };
+    }
+    return where;
   }
   /**
    * get post list
@@ -49,9 +54,9 @@ export default class extends think.model.mongo {
     }
     
     let where = this.getWhereCondition(options.where);
-console.log(where);
+//console.log(where);
     let data = await this.field(field).page(page).order('create_time DESC').where(where).countSelect();
-    console.log(data);
+  //  console.log(data);
     return data;
   }
 
@@ -62,12 +67,24 @@ console.log(where);
    */
   async getPostDetail(pathname){
     let where = this.getWhereCondition({pathname: pathname});
-    let detail = await this.where(where).fieldReverse('markdown_content,summary').find();
+    //console.log(where);
+    let detail = await this.where(where).find();
+
+    console.log(detail);
     if(think.isEmpty(detail)){
       return detail;
     }
-    let prevPromise = this.field('title,pathname').where(this.getWhereCondition({id: ['<', detail.id]})).order('create_time DESC').find();
-    let nextPromise = this.field('title,pathname').where(this.getWhereCondition({id: ['>', detail.id]})).order('create_time ASC').find();
+    let createTime = think.datetime(detail.create_time);
+    let prevWhere = this.getWhereCondition({
+      create_time: ['<', createTime],
+      id: ['!=', detail._id]
+    });
+    let prevPromise = this.field('title,pathname').where(prevWhere).order('create_time DESC').find();
+    let nextWhere = this.getWhereCondition({
+      create_time: ['>', createTime],
+      id: ['!=', detail._id]
+    });
+    let nextPromise = this.field('title,pathname').where(nextWhere).order('create_time ASC').find();
     let [prev, next] = await Promise.all([prevPromise, nextPromise]);
     return {
       detail,

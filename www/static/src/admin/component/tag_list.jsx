@@ -46,12 +46,12 @@ export default class extends Base {
     }
     return this.state.tagList.map(item => {
       return (
-        <tr key={item._id}>
+        <tr key={item.id}>
           <td>{item.name}</td>
           <td>{item.pathname}</td>
-          <td>0</td>
+          <td>{/*item.post_tag.length*/}</td>
           <td>
-            <Link to={`/tag/edit/${item._id}`} title={item.name}>
+            <Link to={`/tag/edit/${item.id}`} title={item.name}>
               <button type="button" className="btn btn-primary btn-xs">
                 <span className="glyphicon glyphicon-edit"></span>
                 编辑
@@ -65,7 +65,7 @@ export default class extends Base {
                   ModalAction.confirm(
                     '提示',
                     <div className="center">确定删除吗？</div>,
-                    TagAction.delete.bind(TagAction, item._id),
+                    TagAction.delete.bind(TagAction, item.id),
                     'modal-sm'
                   )
                 }

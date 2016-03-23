@@ -51,7 +51,7 @@ export default class extends Base {
           <td>
             <Link to={`/page/edit/${item.id}`} title={item.title}>{item.title}</Link>
           </td>
-          <td>{item.user.display_name || item.user.name}</td>
+          <td>{/*item.user.display_name || item.user.name*/}</td>
           <td>{this.renderStatus(item.status)}</td>
           <td>{firekylin.formatTime(item.create_time)}</td>
           <td>{firekylin.formatTime(item.update_time)}</td>
